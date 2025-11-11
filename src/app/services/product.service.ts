@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { response } from 'express';
 import { map, Observable } from 'rxjs';
 import { Product } from '../common/product';
 import { ProductCategory } from '../common/product-category';
@@ -12,7 +11,7 @@ interface GetResponseProducts {
 }
 interface GetResponseProductCategory {
   _embedded: {
-    productCategories: ProductCategory[];
+    productCategory: ProductCategory[];
   };
 }
 
@@ -34,7 +33,7 @@ export class ProductService {
 
   getProductCategories(): Observable<ProductCategory[]> {
     return this.http.get<GetResponseProductCategory>(`${this.baseUrl}/product-category`).pipe(
-      map(response => response._embedded.productCategories)
+      map(response => response._embedded.productCategory)
     );
   }
 }
