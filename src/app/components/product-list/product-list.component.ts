@@ -3,11 +3,12 @@ import { Product } from '../../common/product';
 import { ProductService } from '../../services/product.service';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, RouterLink],
+  imports: [CommonModule, CurrencyPipe, RouterLink, NgbPaginationModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css'
 })
@@ -15,6 +16,11 @@ export class ProductListComponent implements OnInit {
   products: Product[] = [];
   currentCategoryId: number = 1;
   searchMode: boolean = false;
+
+  thePageNumber: number = 1;
+  thePageSize: number = 5;
+  theTotalElements: number = 0;
+  previousCategoryId: number = 1;
 
   constructor(private productService: ProductService,
     private route: ActivatedRoute) {
@@ -24,6 +30,12 @@ export class ProductListComponent implements OnInit {
     this.route.paramMap.subscribe(() => {
       this.listProducts();
     });
+  }
+
+  updatePageSize(pageSize: number): void {
+    this.thePageSize = pageSize;
+    this.thePageNumber = 1;
+    this.listProducts();
   }
 
   listProducts(): void {
@@ -49,7 +61,6 @@ export class ProductListComponent implements OnInit {
         console.error('Error fetching search results:', error);
       }
     );
-
   }
 
   handleListProducts(): void {
@@ -64,10 +75,18 @@ export class ProductListComponent implements OnInit {
       this.currentCategoryId = 1;
     }
 
+    if (this.previousCategoryId != this.currentCategoryId) {
+      this.thePageNumber = 1;
+    }
+    this.previousCategoryId = this.currentCategoryId;
+
     // Now get the products for the given category id
-    this.productService.getProductList(this.currentCategoryId).subscribe(
-      (data: Product[]) => {
-        this.products = data;
+    this.productService.getProductListPaginate(this.thePageNumber - 1, this.thePageSize, this.currentCategoryId).subscribe(
+      (data: any) => {
+        this.products = data._embedded.products;
+        this.thePageNumber = data.page.number + 1;
+        this.thePageSize = data.page.size;
+        this.theTotalElements = data.page.totalElements;
       },
       (error: any) => {
         console.error('Error fetching product list:', error);

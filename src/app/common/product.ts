@@ -1,6 +1,4 @@
 export class Product {
-
-
   constructor(
     public id: any,
     public sku: string,
