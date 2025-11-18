@@ -1,20 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Product } from '../../common/product';
 import { ProductService } from '../../services/product.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, CommonModule } from '@angular/common';
+import { CartItem } from '../../common/cart-item';
+import { CartServiceService } from '../../services/cart-service.service';
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CurrencyPipe, RouterLink],
+  imports: [CurrencyPipe, RouterLink, CommonModule],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.css'
 })
-export class ProductDetailsComponent {
-  product!: Product;
+export class ProductDetailsComponent implements OnInit {
+  product: Product | undefined;
 
-  constructor(private productService: ProductService, private route: ActivatedRoute) {
+  constructor(private productService: ProductService, private route: ActivatedRoute, private cartService: CartServiceService) {
   }
 
   ngOnInit(): void {
@@ -31,6 +33,15 @@ export class ProductDetailsComponent {
         this.product = data;
       }
     );
+  }
+
+  addToCart() {
+    if (this.product) {
+      console.log(`Adding to cart: ${this.product.name}, ${this.product.unitPrice}`);
+
+      const theCartItem = new CartItem(this.product);
+      this.cartService.addToCart(theCartItem);
+    }
   }
 
 }
