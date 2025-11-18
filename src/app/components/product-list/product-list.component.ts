@@ -22,6 +22,8 @@ export class ProductListComponent implements OnInit {
   theTotalElements: number = 0;
   previousCategoryId: number = 1;
 
+  previousKeyword: string = '';
+
   constructor(private productService: ProductService,
     private route: ActivatedRoute) {
   }
@@ -53,14 +55,27 @@ export class ProductListComponent implements OnInit {
   handleSearchProducts(): void {
     // Get the "keyword" param string. 
     const theKeyword: string = this.route.snapshot.paramMap.get('keyword')!;
-    this.productService.searchProducts(theKeyword).subscribe(
-      (data: Product[]) => {
-        this.products = data;
-      },
+
+    if (this.previousKeyword != theKeyword) {
+      this.thePageNumber = 1;
+    }
+    this.previousKeyword = theKeyword;
+
+    this.productService.searchProductsPaginate(theKeyword, this.thePageNumber - 1, this.thePageSize).subscribe(
+      this.processResults(),
       (error: any) => {
         console.error('Error fetching search results:', error);
       }
     );
+  }
+
+  private processResults() {
+    return (data: any) => {
+      this.products = data._embedded.products;
+      this.thePageNumber = data.page.number + 1;
+      this.thePageSize = data.page.size;
+      this.theTotalElements = data.page.totalElements;
+    }
   }
 
   handleListProducts(): void {
