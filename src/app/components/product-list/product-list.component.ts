@@ -4,6 +4,8 @@ import { ProductService } from '../../services/product.service';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { CartItem } from '../../common/cart-item';
+import { CartServiceService } from '../../services/cart-service.service';
 
 @Component({
   selector: 'app-product-list',
@@ -25,7 +27,8 @@ export class ProductListComponent implements OnInit {
   previousKeyword: string = '';
 
   constructor(private productService: ProductService,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private cartService: CartServiceService) {
   }
 
   ngOnInit(): void {
@@ -107,6 +110,11 @@ export class ProductListComponent implements OnInit {
         console.error('Error fetching product list:', error);
       }
     );
+  }
+
+  addToCart(theProduct: Product) {
+    const theCartItem = new CartItem(theProduct);
+    this.cartService.addToCart(theCartItem);
   }
 
 }
