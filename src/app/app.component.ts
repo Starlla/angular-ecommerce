@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLinkActive, RouterLink } from '@angular/router';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ProductCategoryMenuComponent } from "./components/product-category-menu/product-category-menu.component";
 import { SearchComponent } from "./components/search/search.component";
@@ -9,7 +9,7 @@ import { CartStatusComponent } from "./components/cart-status/cart-status.compon
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, ProductListComponent, RouterLinkActive, ProductCategoryMenuComponent,
-    SearchComponent, CartStatusComponent],
+    SearchComponent, CartStatusComponent, RouterLink],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -1,6 +1,8 @@
 <div class="main-content">
   <div class="section-content section-content-p30">
     <div class="container-fluid">
+
+      @if (cartItems.length > 0) {
       <table class="table table-bordered">
         <tr>
           <th width="20">Product Image</th>
@@ -32,9 +34,15 @@
             <p>Total Price: {{ totalPrcie | currency:'USD' }}</p>
           </td>
         </tr>
-
       </table>
+      } @else {
+      <div class="alert alert-warning text-center" role="alert">
+        <h4>Your shopping cart is empty</h4>
+        <p>Browse our products and add some items to your cart!</p>
+        <a routerLink="/products" class="btn btn-primary mt-3">Continue Shopping</a>
+      </div>
+      }
+
     </div>
   </div>
-
 </div>
