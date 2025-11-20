@@ -49,6 +49,10 @@
             <p>Total Quantity: {{ totalQuantity }}</p>
             <p>Shipping: FREE</p>
             <p>Total Price: {{ totalPrcie | currency:'USD' }}</p>
+            <button routerLink="/checkout" class="btn btn-primary btn-sm mb-2"
+              style="background-color: #007bff; border-color: #007bff; color: white; text-decoration: none; margin-left: 0.5rem;">
+              Checkout
+            </button>
           </td>
         </tr>
       </table>
