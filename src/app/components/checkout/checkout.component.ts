@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { CartServiceService } from '../../services/cart-service.service';
+import { MyShopFormService } from '../../services/my-shop-form.service';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [ReactiveFormsModule, CurrencyPipe],
+  imports: [ReactiveFormsModule, CurrencyPipe, CommonModule],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css'
 })
@@ -15,7 +16,10 @@ export class CheckoutComponent implements OnInit {
   totalPrice: number = 0;
   totalQuantity: number = 0;
 
-  constructor(private formBuilder: FormBuilder, private cartService: CartServiceService) { }
+  creditCardMonths: number[] = [];
+  creditCardYears: number[] = [];
+
+  constructor(private formBuilder: FormBuilder, private cartService: CartServiceService, private myShopFormService: MyShopFormService) { }
 
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
@@ -59,6 +63,17 @@ export class CheckoutComponent implements OnInit {
 
     // Compute cart totals
     this.cartService.computeCartTotals();
+
+    // Populate credit card months
+    const startMonth: number = new Date().getMonth() + 1;
+    this.myShopFormService.getCreditCardMonths(startMonth).subscribe(
+      data => this.creditCardMonths = data
+    );
+
+    // Populate credit card years
+    this.myShopFormService.getCreditCardYears().subscribe(
+      data => this.creditCardYears = data
+    );
   }
 
   onSubmit(): void {
