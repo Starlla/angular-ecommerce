@@ -12,6 +12,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './cart-details.component.css'
 })
 export class CartDetailsComponent {
+
   cartItems: CartItem[] = [];
   totalPrcie: number = 0;
   totalQuantity: number = 0;
@@ -38,6 +39,18 @@ export class CartDetailsComponent {
 
     // compute cart total price and total quantity
     this.cartService.computeCartTotals();
+  }
+
+  incrementQuantity(theCartItem: CartItem) {
+    this.cartService.addToCart(theCartItem);
+  }
+
+  decrementQuantity(theCartItem: CartItem) {
+    this.cartService.decrementQuantity(theCartItem);
+  }
+
+  remove(theCartItem: CartItem) {
+    this.cartService.remove(theCartItem);
   }
 
 }
