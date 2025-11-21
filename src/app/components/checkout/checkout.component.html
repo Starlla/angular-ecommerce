@@ -81,6 +81,13 @@
                     <select class="form-control" formControlName="country" (change)="getStates('shippingAddress')">
                       <option *ngFor="let country of countries" [ngValue]="country">{{ country.name }}</option>
                     </select>
+                    <div
+                      *ngIf="shippingAddressCountry?.invalid && (shippingAddressCountry?.touched || shippingAddressCountry?.dirty)"
+                      class="alert alert-danger mt-1">
+                      <div *ngIf="shippingAddressCountry?.errors?.['required']">
+                        Country is required.
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -135,6 +142,13 @@
                     <select class="form-control" formControlName="state">
                       <option *ngFor="let state of shippingAddressStates" [ngValue]="state">{{ state.name }}</option>
                     </select>
+                    <div
+                      *ngIf="shippingAddressState?.invalid && (shippingAddressState?.touched || shippingAddressState?.dirty)"
+                      class="alert alert-danger mt-1">
+                      <div *ngIf="shippingAddressState?.errors?.['required']">
+                        State is required.
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -181,6 +195,13 @@
                     <select class="form-control" formControlName="country" (change)="getStates('billingAddress')">
                       <option *ngFor="let country of countries" [ngValue]="country">{{ country.name }}</option>
                     </select>
+                    <div
+                      *ngIf="billingAddressCountry?.invalid && (billingAddressCountry?.touched || billingAddressCountry?.dirty)"
+                      class="alert alert-danger mt-1">
+                      <div *ngIf="billingAddressCountry?.errors?.['required']">
+                        Country is required.
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -235,6 +256,13 @@
                     <select class="form-control" formControlName="state">
                       <option *ngFor="let state of billingAddressStates" [ngValue]="state">{{ state.name }}</option>
                     </select>
+                    <div
+                      *ngIf="billingAddressState?.invalid && (billingAddressState?.touched || billingAddressState?.dirty)"
+                      class="alert alert-danger mt-1">
+                      <div *ngIf="billingAddressState?.errors?.['required']">
+                        State is required.
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
