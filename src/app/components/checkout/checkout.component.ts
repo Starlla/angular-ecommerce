@@ -89,12 +89,21 @@ export class CheckoutComponent implements OnInit {
     );
   }
 
+  // Getter methods for customer form controls
+  get firstName() { return this.checkoutFormGroup.get('customer.firstName'); }
+  get lastName() { return this.checkoutFormGroup.get('customer.lastName'); }
+  get email() { return this.checkoutFormGroup.get('customer.email'); }
+
   onSubmit(): void {
     console.log('Handling the submit button');
     console.log(this.checkoutFormGroup.get('customer')?.value);
     console.log(this.checkoutFormGroup.get('shippingAddress')?.value);
     console.log(this.checkoutFormGroup.get('billingAddress')?.value);
     console.log(this.checkoutFormGroup.get('creditCard')?.value);
+
+    if (this.checkoutFormGroup.invalid) {
+      this.checkoutFormGroup.markAllAsTouched();
+    }
   }
 
   copyShippingAddressToBillingAddress(event: any): void {
