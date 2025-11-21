@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { CartServiceService } from '../../services/cart-service.service';
 import { MyShopFormService } from '../../services/my-shop-form.service';
+import { Country } from '../../common/country';
+import { State } from '../../common/state';
 
 @Component({
   selector: 'app-checkout',
@@ -18,6 +20,10 @@ export class CheckoutComponent implements OnInit {
 
   creditCardMonths: number[] = [];
   creditCardYears: number[] = [];
+
+  countries: Country[] = [];
+  shippingAddressStates: State[] = [];
+  billingAddressStates: State[] = [];
 
   constructor(private formBuilder: FormBuilder, private cartService: CartServiceService, private myShopFormService: MyShopFormService) { }
 
@@ -74,6 +80,13 @@ export class CheckoutComponent implements OnInit {
     this.myShopFormService.getCreditCardYears().subscribe(
       data => this.creditCardYears = data
     );
+
+    this.myShopFormService.getCountries().subscribe(
+      data => {
+        console.log("Retrieved countries: " + JSON.stringify(data));
+        this.countries = data;
+      }
+    );
   }
 
   onSubmit(): void {
@@ -110,6 +123,21 @@ export class CheckoutComponent implements OnInit {
 
     this.myShopFormService.getCreditCardMonths(startMonth).subscribe(
       data => this.creditCardMonths = data
+    );
+  }
+
+  getStates(formGroupName: string): void {
+    const formGroup = this.checkoutFormGroup.get(formGroupName);
+    const countryCode = formGroup?.value.country.code;
+
+    this.myShopFormService.getStates(countryCode).subscribe(
+      data => {
+        if (formGroupName === 'shippingAddress') {
+          this.shippingAddressStates = data;
+        } else {
+          this.billingAddressStates = data;
+        }
+      }
     );
   }
 }
