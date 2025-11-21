@@ -5,6 +5,7 @@ import { CartServiceService } from '../../services/cart-service.service';
 import { MyShopFormService } from '../../services/my-shop-form.service';
 import { Country } from '../../common/country';
 import { State } from '../../common/state';
+import { MyShopValidators } from '../../validators/my-shop-validators';
 
 @Component({
   selector: 'app-checkout',
@@ -30,8 +31,8 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
-        firstName: ['', [Validators.required, Validators.minLength(2)]],
-        lastName: ['', [Validators.required, Validators.minLength(2)]],
+        firstName: ['', [Validators.required, Validators.minLength(2), MyShopValidators.notOnlyWhitespace]],
+        lastName: ['', [Validators.required, Validators.minLength(2), MyShopValidators.notOnlyWhitespace]],
         email: ['', [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]]
       }),
       shippingAddress: this.formBuilder.group({
