@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { CartServiceService } from '../../services/cart-service.service';
 import { MyShopFormService } from '../../services/my-shop-form.service';
@@ -30,31 +30,31 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
-        firstName: [''],
-        lastName: [''],
-        email: ['']
+        firstName: ['', [Validators.required, Validators.minLength(2)]],
+        lastName: ['', [Validators.required, Validators.minLength(2)]],
+        email: ['', [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]]
       }),
       shippingAddress: this.formBuilder.group({
-        street: [''],
-        city: [''],
-        state: [''],
-        country: [''],
-        zipCode: ['']
+        street: ['', [Validators.required, Validators.minLength(2)]],
+        city: ['', [Validators.required, Validators.minLength(2)]],
+        state: ['', Validators.required],
+        country: ['', Validators.required],
+        zipCode: ['', [Validators.required, Validators.minLength(2)]],
       }),
       billingAddress: this.formBuilder.group({
-        street: [''],
-        city: [''],
-        state: [''],
-        country: [''],
-        zipCode: ['']
+        street: ['', [Validators.required, Validators.minLength(2)]],
+        city: ['', [Validators.required, Validators.minLength(2)]],
+        state: ['', Validators.required],
+        country: ['', Validators.required],
+        zipCode: ['', [Validators.required, Validators.minLength(2)]]
       }),
       creditCard: this.formBuilder.group({
         cardType: [''],
         nameOnCard: [''],
-        cardNumber: [''],
-        securityCode: [''],
-        expirationMonth: [''],
-        expirationYear: ['']
+        cardNumber: ['', [Validators.required, Validators.minLength(16), Validators.maxLength(16)]],
+        securityCode: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]],
+        expirationMonth: ['', Validators.required],
+        expirationYear: ['', Validators.required]
       })
     });
 
@@ -101,6 +101,8 @@ export class CheckoutComponent implements OnInit {
     if (event.target.checked) {
       this.checkoutFormGroup.controls['billingAddress']
         .setValue(this.checkoutFormGroup.controls['shippingAddress'].value);
+
+      this.billingAddressStates = this.shippingAddressStates;
     } else {
       this.checkoutFormGroup.controls['billingAddress'].reset();
     }
@@ -137,6 +139,8 @@ export class CheckoutComponent implements OnInit {
         } else {
           this.billingAddressStates = data;
         }
+
+        formGroup?.get('state')?.setValue(data[0]);
       }
     );
   }
