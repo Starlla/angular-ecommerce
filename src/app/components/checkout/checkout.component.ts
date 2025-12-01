@@ -6,6 +6,11 @@ import { MyShopFormService } from '../../services/my-shop-form.service';
 import { Country } from '../../common/country';
 import { State } from '../../common/state';
 import { MyShopValidators } from '../../validators/my-shop-validators';
+import { CheckoutService } from '../../services/checkout.service';
+import { Router } from '@angular/router';
+import { Order } from '../../common/order';
+import { OrderItem } from '../../common/order-item';
+import { Purchase } from '../../common/purchase';
 
 @Component({
   selector: 'app-checkout',
@@ -26,7 +31,10 @@ export class CheckoutComponent implements OnInit {
   shippingAddressStates: State[] = [];
   billingAddressStates: State[] = [];
 
-  constructor(private formBuilder: FormBuilder, private cartService: CartServiceService, private myShopFormService: MyShopFormService) { }
+  constructor(private formBuilder: FormBuilder, private cartService: CartServiceService,
+    private myShopFormService: MyShopFormService, private checkoutService: CheckoutService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
@@ -130,7 +138,54 @@ export class CheckoutComponent implements OnInit {
 
     if (this.checkoutFormGroup.invalid) {
       this.checkoutFormGroup.markAllAsTouched();
+      return;
     }
+
+    let order = new Order(this.totalQuantity, this.totalPrice);
+
+    const cartItems = this.cartService.cartItems;
+
+    // Create orderItems from cartItems
+    let orderItems: OrderItem[] = cartItems.map(tempCartItem => new OrderItem(tempCartItem));
+
+    let purchase = new Purchase(
+      this.checkoutFormGroup.get('customer')!.value,
+      this.checkoutFormGroup.get('shippingAddress')!.value,
+      this.checkoutFormGroup.get('billingAddress')!.value,
+      order,
+      orderItems
+    );
+
+    const shippingState: State = this.checkoutFormGroup.get('shippingAddress.state')!.value;
+    const shippingCountry: Country = this.checkoutFormGroup.get('shippingAddress.country')!.value;
+    purchase.shippingAddress.state = shippingState.name;
+    purchase.shippingAddress.country = shippingCountry.name;
+
+    const billingState: State = this.checkoutFormGroup.get('billingAddress.state')!.value;
+    const billingCountry: Country = this.checkoutFormGroup.get('billingAddress.country')!.value;
+    purchase.billingAddress.state = billingState.name;
+    purchase.billingAddress.country = billingCountry.name;
+
+    // Call REST API via CheckoutService
+    this.checkoutService.placeOrder(purchase).subscribe({
+      next: response => {
+        alert(`Your order has been received.\nOrder tracking number: ${(response as any).orderTrackingNumber}`);
+
+        // Reset cart
+        this.cartService.cartItems = [];
+        this.cartService.computeCartTotals();
+
+        // Reset the form
+        this.checkoutFormGroup.reset();
+
+        // Navigate back to products page
+        this.router.navigateByUrl("/products");
+      },
+      error: err => {
+        alert(`There was an error: ${err.message}`);
+      }
+    });
+
   }
 
   copyShippingAddressToBillingAddress(event: any): void {
