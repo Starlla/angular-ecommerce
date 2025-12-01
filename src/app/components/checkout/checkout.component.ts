@@ -60,13 +60,7 @@ export class CheckoutComponent implements OnInit {
     });
 
     // Subscribe to cart totals
-    this.cartService.totalPrice.subscribe(
-      data => this.totalPrice = data
-    );
-
-    this.cartService.totalQuantity.subscribe(
-      data => this.totalQuantity = data
-    );
+    this.reviewCartDetails();
 
     // Compute cart totals
     this.cartService.computeCartTotals();
@@ -87,6 +81,16 @@ export class CheckoutComponent implements OnInit {
         console.log("Retrieved countries: " + JSON.stringify(data));
         this.countries = data;
       }
+    );
+  }
+
+  private reviewCartDetails() {
+    this.cartService.totalPrice.subscribe(
+      data => this.totalPrice = data
+    );
+
+    this.cartService.totalQuantity.subscribe(
+      data => this.totalQuantity = data
     );
   }
 
