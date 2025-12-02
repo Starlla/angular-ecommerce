@@ -40,3 +40,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Auth0 Configuration (contains sensitive credentials)
+/src/app/my-app-config.ts

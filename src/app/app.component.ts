@@ -4,12 +4,13 @@ import { ProductListComponent } from './components/product-list/product-list.com
 import { ProductCategoryMenuComponent } from "./components/product-category-menu/product-category-menu.component";
 import { SearchComponent } from "./components/search/search.component";
 import { CartStatusComponent } from "./components/cart-status/cart-status.component";
+import { LoginStatusComponent } from './components/login-status/login-status.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, ProductListComponent, RouterLinkActive, ProductCategoryMenuComponent,
-    SearchComponent, CartStatusComponent, RouterLink],
+    SearchComponent, CartStatusComponent, RouterLink, LoginStatusComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
