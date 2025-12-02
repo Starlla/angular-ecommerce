@@ -25,6 +25,7 @@
   display: -moz-box;
   display: -ms-flexbox;
   display: flex;
+  max-height: 45px;
 }
 
 /*
