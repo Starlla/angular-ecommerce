@@ -3,6 +3,8 @@ import { ProductListComponent } from './components/product-list/product-list.com
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
+import { MembersPageComponent } from './components/members-page/members-page.component';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'category/:id', component: ProductListComponent },
@@ -12,6 +14,7 @@ export const routes: Routes = [
   { path: 'search/:keyword', component: ProductListComponent },
   { path: 'cart-details', component: CartDetailsComponent },
   { path: 'checkout', component: CheckoutComponent },
+  { path: 'members', component: MembersPageComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: '/products', pathMatch: 'full' },
   { path: '**', redirectTo: '/products', pathMatch: 'full' }
 ];

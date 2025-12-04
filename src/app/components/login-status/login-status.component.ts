@@ -1,11 +1,12 @@
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { Component, Inject, Optional } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
   selector: 'app-login-status',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './login-status.component.html',
   styleUrl: './login-status.component.css'
 })
