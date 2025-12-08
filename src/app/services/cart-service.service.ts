@@ -17,13 +17,13 @@ export class CartServiceService {
   constructor() {
     // Initialize storage only in browser environment
     if (this.isBrowser) {
-      this.storage = sessionStorage;
+      this.storage = localStorage;
     }
 
-    // Load cart items from sessionStorage only in browser
+    // Load cart items from localStorage only in browser
     if (this.isBrowser) {
       try {
-        let data = sessionStorage.getItem('cartItems');
+        let data = localStorage.getItem('cartItems');
         if (data != null) {
           this.cartItems = JSON.parse(data);
           this.computeCartTotals();
