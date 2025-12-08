@@ -7,11 +7,39 @@ import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 export class CartServiceService {
 
   cartItems: any[] = [];
+  storage: Storage | undefined;
+  private isBrowser = typeof window !== 'undefined';
 
   totalPrice: Subject<number> = new BehaviorSubject<number>(0);
   totalQuantity: Subject<number> = new BehaviorSubject<number>(0);
 
-  constructor() { }
+
+  constructor() {
+    // Initialize storage only in browser environment
+    if (this.isBrowser) {
+      this.storage = sessionStorage;
+    }
+
+    // Load cart items from sessionStorage only in browser
+    if (this.isBrowser) {
+      try {
+        let data = sessionStorage.getItem('cartItems');
+        if (data != null) {
+          this.cartItems = JSON.parse(data);
+          this.computeCartTotals();
+        }
+      } catch (error) {
+        console.error('Error loading cart items:', error);
+        this.cartItems = [];
+      }
+    }
+  }
+
+  persistCartItems() {
+    if (this.isBrowser && this.storage) {
+      this.storage.setItem('cartItems', JSON.stringify(this.cartItems));
+    }
+  }
 
   addToCart(theCartItem: any): void {
     // check if we already have the item in our cart
@@ -63,5 +91,6 @@ export class CartServiceService {
     // publish the new values ... all subscribers will receive the new data
     this.totalPrice.next(totalPriceValue);
     this.totalQuantity.next(totalQuantityValue);
+    this.persistCartItems();
   }
 }
