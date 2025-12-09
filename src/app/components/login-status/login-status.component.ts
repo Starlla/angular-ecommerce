@@ -40,6 +40,20 @@ export class LoginStatusComponent {
     }
   }
 
+  getUserDetails(): string | null {
+    if (this.isAuthenticated && this.isBrowser && this.storage) {
+      try {
+        const storedEmail = this.storage.getItem('userEmail');
+        if (storedEmail) {
+          return JSON.parse(storedEmail);
+        }
+      } catch (error) {
+        console.error('Error retrieving user email from session storage:', error);
+      }
+    }
+    return null;
+  }
+
   login() {
     if (this.isBrowser && this.auth) {
       this.auth.loginWithRedirect();

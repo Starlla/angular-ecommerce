@@ -1,0 +1,23 @@
+<div class="main-content" style="margin-left: 5%; margin-right: 5%;">
+  <h3>Order History</h3>
+  <div *ngIf="orderHistoryList.length>0">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Order Tracking Number</th>
+          <th>Total Price</th>
+          <th>Total Quantity</th>
+          <th>Date Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orderHistoryList">
+          <td>{{ order.orderTrackingNumber }}</td>
+          <td>{{ order.totalPrice | currency:'USD' }}</td>
+          <td>{{ order.totalQuantity }}</td>
+          <td>{{ order.dateCreated | date:'medium' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
