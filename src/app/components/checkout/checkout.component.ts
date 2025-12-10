@@ -23,6 +23,7 @@ export class CheckoutComponent implements OnInit {
   checkoutFormGroup!: FormGroup;
   totalPrice: number = 0;
   totalQuantity: number = 0;
+  isSubmitting: boolean = false;
 
   creditCardMonths: number[] = [];
   creditCardYears: number[] = [];
@@ -134,6 +135,13 @@ export class CheckoutComponent implements OnInit {
 
   onSubmit(): void {
     console.log('Handling the submit button');
+
+    // Prevent double submission
+    if (this.isSubmitting) {
+      console.log('Form already being submitted, ignoring...');
+      return;
+    }
+
     console.log(this.checkoutFormGroup.get('customer')?.value);
     console.log(this.checkoutFormGroup.get('shippingAddress')?.value);
     console.log(this.checkoutFormGroup.get('billingAddress')?.value);
@@ -143,6 +151,8 @@ export class CheckoutComponent implements OnInit {
       this.checkoutFormGroup.markAllAsTouched();
       return;
     }
+
+    this.isSubmitting = true;
 
     let order = new Order(this.totalQuantity, this.totalPrice);
 
@@ -172,6 +182,7 @@ export class CheckoutComponent implements OnInit {
     // Call REST API via CheckoutService
     this.checkoutService.placeOrder(purchase).subscribe({
       next: response => {
+        this.isSubmitting = false;
         alert(`Your order has been received.\nOrder tracking number: ${(response as any).orderTrackingNumber}`);
 
         // Reset cart
@@ -185,6 +196,8 @@ export class CheckoutComponent implements OnInit {
         this.router.navigateByUrl("/products");
       },
       error: err => {
+        this.isSubmitting = false;
+        console.error('Checkout error:', err);
         alert(`There was an error: ${err.message}`);
       }
     });

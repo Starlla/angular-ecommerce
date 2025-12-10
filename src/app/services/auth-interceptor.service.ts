@@ -20,12 +20,12 @@ export class AuthInterceptorService implements HttpInterceptor {
   }
 
   private async handleAccess(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> {
-    const securedEndpoints = ['http://localhost:8080/api/orders'];
-
     console.log('Interceptor checking URL:', request.urlWithParams);
-    console.log('Secured endpoints:', securedEndpoints);
 
-    if (securedEndpoints.some((url) => request.urlWithParams.includes(url))) {
+    // Handle both orders and checkout endpoints
+    if (request.urlWithParams.includes('http://localhost:8080/api/orders') ||
+      request.urlWithParams.includes('http://localhost:8080/api/checkout/purchase')) {
+      console.log('Secured endpoint matched! Adding Bearer token...');
       console.log('URL matched! Adding Bearer token...');
       try {
         const token = await lastValueFrom(this.auth.getAccessTokenSilently());
