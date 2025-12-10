@@ -10,24 +10,36 @@ import { from, lastValueFrom, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthInterceptorService implements HttpInterceptor {
-  constructor(private auth: AuthService) { }
+  constructor(private auth: AuthService) {
+    console.log('AuthInterceptorService constructor called!');
+  }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log('AuthInterceptorService intercept method called!');
     return from(this.handleAccess(request, next));
   }
 
   private async handleAccess(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> {
     const securedEndpoints = ['http://localhost:8080/api/orders'];
 
+    console.log('Interceptor checking URL:', request.urlWithParams);
+    console.log('Secured endpoints:', securedEndpoints);
+
     if (securedEndpoints.some((url) => request.urlWithParams.includes(url))) {
-      await this.auth.getAccessTokenSilently().forEach((token) => {
+      console.log('URL matched! Adding Bearer token...');
+      try {
+        const token = await lastValueFrom(this.auth.getAccessTokenSilently());
         console.log('Access Token: ', token);
         request = request.clone({
           setHeaders: {
             Authorization: `Bearer ${token}`,
           },
         });
-      });
+      } catch (error) {
+        console.error('Error getting access token:', error);
+      }
+    } else {
+      console.log('URL did not match secured endpoints');
     }
 
     return await lastValueFrom(next.handle(request));

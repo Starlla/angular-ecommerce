@@ -1,6 +1,24 @@
 <div class="main-content" style="margin-left: 5%; margin-right: 5%; ">
   <h3 class="mb-2">Order History</h3>
-  <div *ngIf="orderHistoryList.length>0">
+
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="text-center">
+    <p>Loading your order history...</p>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="!isLoading && errorMessage" class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!isLoading && !errorMessage && (!orderHistoryList || orderHistoryList.length === 0)"
+    class="alert alert-warning" role="alert">
+    No orders found.
+  </div>
+
+  <!-- Orders table -->
+  <div *ngIf="!isLoading && !errorMessage && orderHistoryList && orderHistoryList.length > 0">
     <table class="table table-bordered table-hover">
       <thead>
         <tr>

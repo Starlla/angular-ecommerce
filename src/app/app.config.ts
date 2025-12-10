@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withFetch, withInterceptors, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors, HTTP_INTERCEPTORS, withInterceptorsFromDi } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { provideAuth0, AuthHttpInterceptor } from '@auth0/auth0-angular';
 
@@ -17,19 +17,11 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideHttpClient(
       withFetch(),
-      withInterceptors([]),
+      withInterceptorsFromDi(),
     ),
     importProvidersFrom(NgbModule),
     // Auth0 configuration equivalent to AuthModule.forRoot()
-    provideAuth0({
-      ...myAppConfig.auth,
-      httpInterceptor: {
-        ...myAppConfig.httpInterceptor,
-      },
-      cacheLocation: 'localstorage',
-      skipRedirectCallback: typeof window === 'undefined',
-      useRefreshTokens: typeof window !== 'undefined',
-    }),
+    provideAuth0(auth0Config),
     // HTTP Interceptors equivalent to providers array in NgModule
     {
       provide: HTTP_INTERCEPTORS,
