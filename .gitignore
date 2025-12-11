@@ -43,3 +43,7 @@ Thumbs.db
 
 # Auth0 Configuration (contains sensitive credentials)
 /src/app/my-app-config.ts
+ssl-localhost/localhost.crt
+.gitignore
+.gitignore
+ssl-localhost/localhost.key
