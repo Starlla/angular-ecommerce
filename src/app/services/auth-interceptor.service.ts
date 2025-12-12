@@ -11,22 +11,23 @@ import { from, lastValueFrom, Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class AuthInterceptorService implements HttpInterceptor {
   constructor(private auth: AuthService) {
-    console.log('AuthInterceptorService constructor called!');
+    console.log('AuthInterceptorService constructor called - interceptor is being loaded!');
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('AuthInterceptorService intercept method called!');
+    console.log('🔥 INTERCEPTOR CALLED FOR:', request.url);
     return from(this.handleAccess(request, next));
   }
 
   private async handleAccess(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> {
     console.log('Interceptor checking URL:', request.urlWithParams);
+    console.log('URL includes orders check:', request.urlWithParams.includes('https://localhost:8443/api/orders'));
+    console.log('URL includes checkout check:', request.urlWithParams.includes('https://localhost:8443/api/checkout/purchase'));
 
     // Handle both orders and checkout endpoints
-    if (request.urlWithParams.includes('http://localhost:8080/api/orders') ||
-      request.urlWithParams.includes('http://localhost:8080/api/checkout/purchase')) {
+    if (request.urlWithParams.includes('https://localhost:8443/api/orders') ||
+      request.urlWithParams.includes('https://localhost:8443/api/checkout/purchase')) {
       console.log('Secured endpoint matched! Adding Bearer token...');
-      console.log('URL matched! Adding Bearer token...');
       try {
         const token = await lastValueFrom(this.auth.getAccessTokenSilently());
         console.log('Access Token: ', token);

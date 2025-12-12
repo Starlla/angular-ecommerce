@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OrderHistory } from '../common/order-history';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class OrderHistoryServiceService {
   constructor(private httpClient: HttpClient) { }
 
   getOrderHistory(theEmail: string): Observable<getResponseOrderHistory> {
-    const orderHistoryUrl = `http://localhost:8080/api/orders/search/findByCustomerEmailOrderByDateCreatedDesc?email=${encodeURIComponent(theEmail)}`;
+    const orderHistoryUrl = `${environment.apiUrl}/orders/search/findByCustomerEmailOrderByDateCreatedDesc?email=${encodeURIComponent(theEmail)}`;
     console.log('Order history URL:', orderHistoryUrl);
     return this.httpClient.get<getResponseOrderHistory>(orderHistoryUrl);
   }

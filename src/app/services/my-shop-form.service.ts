@@ -3,16 +3,15 @@ import { Injectable } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
 import { State } from '../common/state';
 import { Country } from '../common/country';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MyShopFormService {
 
-  private countriesUrl = 'http://localhost:8080/api/countries';
-  private statesUrl = 'http://localhost:8080/api/states';
-
-  constructor(private httpClient: HttpClient) { }
+  private countriesUrl = `${environment.apiUrl}/countries`;
+  private statesUrl = `${environment.apiUrl}/states`; constructor(private httpClient: HttpClient) { }
 
   getCreditCardMonths(startMonth: number): Observable<number[]> {
     let months: number[] = [];
